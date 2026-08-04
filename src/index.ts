@@ -17,6 +17,8 @@ const port = process.env.PORT
 const uri = process.env.MONGODB_URI
 
 if(port === undefined || port === null) throw new Error("port is not defined")
+if(uri === undefined || uri === null) throw new Error("uri is not defined")
+
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))

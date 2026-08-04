@@ -7,5 +7,6 @@ export const connectDB = async (uri : string) => {
     }
     catch (error)        {
         console.error(`Error connecting to database: ${error}`)
+        throw error
     }
 }
