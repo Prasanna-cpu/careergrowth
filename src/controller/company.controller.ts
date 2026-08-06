@@ -105,15 +105,27 @@ export const getCompanyById = async (req : AuthenticatedRequest , res : Response
 export const updateCompany = async (req : AuthenticatedRequest , res : Response) => {
     try{
         const {name , description, website, location} = req.body
+        const userId = req.user?._id
         const file = req.file
+
+        if(!userId){
+            return res.status(401).json({
+                message: "Unauthorized",
+                status : res.statusCode
+            })
+        }
 
         const updateData = {name, description, website, location}
 
-        const company = await Company.findByIdAndUpdate(req.params.companyId, updateData, {returnDocument : "after"})
+        const company = await Company.findOneAndUpdate(
+            {_id : req.params.companyId, userId},
+            updateData,
+            {returnDocument : "after"}
+        )
 
         if(!company) {
-            return res.status(404).json({
-                message: "Company not found",
+            return res.status(403).json({
+                message: "You are not authorized to update this company",
                 status : res.statusCode
             })
         }

@@ -1,11 +1,19 @@
 import {AuthenticatedRequest} from "../interfaces_and_types/authenticated_request";
 import {Request, Response} from "express";
 import {Job} from "../models/job.model";
+import {Company} from "../models/company.model";
 
 export const postJob = async (req : AuthenticatedRequest, res : Response) => {
     try{
         const {title, description, requirements, salary, location, jobType, experience, position, companyId} = req.body
         const userId = req.user?._id
+
+        if(!userId){
+            return res.status(401).json({
+                message: "Unauthorized",
+                status : res.statusCode
+            })
+        }
 
         if(!title || !description || !requirements || !salary || !location || !jobType || !experience || !position || !companyId){
             return res.status(400).json({
@@ -27,6 +35,14 @@ export const postJob = async (req : AuthenticatedRequest, res : Response) => {
                 })
             }
             requirementArray = requirementArray.map((requirement) => requirement.trim()).filter(Boolean)
+        }
+
+        const company = await Company.findOne({_id : companyId, userId})
+        if(!company){
+            return res.status(403).json({
+                message: "You are not authorized to create jobs for this company",
+                status : res.statusCode
+            })
         }
 
          const newJob = await Job.create({
@@ -99,15 +115,29 @@ export const getAllJobs = async (req : AuthenticatedRequest, res : Response) => 
 export const getJobById = async (req : AuthenticatedRequest, res : Response) => {
     try{
         const {jobId} = req.params
-        const job = await Job.findById(jobId).populate({
-            path : "applications"
-        })
+        const userId = req.user?._id
+
+        if(!userId){
+            return res.status(401).json({
+                message: "Unauthorized",
+                status : res.statusCode
+            })
+        }
+
+        const job = await Job.findById(jobId)
         if(!job){
             return res.status(404).json({
                 message: "Job not found",
                 status : res.statusCode
             })
         }
+
+        if(job.created_by.toString() === userId.toString()){
+            await job.populate({
+                path : "applications"
+            })
+        }
+
         return res.status(200).json({
             message: "Job retrieved successfully",
             status : res.statusCode,
