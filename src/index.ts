@@ -7,6 +7,8 @@ import helmet from "helmet";
 import {connectDB} from "./database/connection";
 import {authRouter} from "./router/auth.router";
 import {userRouter} from "./router/user.router";
+import {companyRouter} from "./router/company.router";
+import {jobRouter} from "./router/job.router";
 
 
 dotenv.config();
@@ -49,6 +51,8 @@ app.get("/", (_, res) => {
 
 app.use("/auth", authRouter)
 app.use("/api/user", userRouter)
+app.use("/api/company", companyRouter)
+app.use("/api/job", jobRouter)
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`)
