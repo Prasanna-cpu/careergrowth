@@ -19,4 +19,7 @@ const applicationSchema = new mongoose.Schema({
 },{
     timestamps: true
 });
+
+export type TApplication = mongoose.InferSchemaType<typeof applicationSchema>
+
 export const Application  = mongoose.model("Application", applicationSchema);

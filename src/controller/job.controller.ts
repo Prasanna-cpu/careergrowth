@@ -2,6 +2,7 @@ import {AuthenticatedRequest} from "../interfaces_and_types/authenticated_reques
 import {Request, Response} from "express";
 import {Job} from "../models/job.model";
 import {Company} from "../models/company.model";
+import {User} from "../models/user.model";
 
 export const postJob = async (req : AuthenticatedRequest, res : Response) => {
     try{
@@ -11,6 +12,22 @@ export const postJob = async (req : AuthenticatedRequest, res : Response) => {
         if(!userId){
             return res.status(401).json({
                 message: "Unauthorized",
+                status : res.statusCode
+            })
+        }
+
+        const user = await User.findById(userId)
+
+        if (!user){
+            return res.status(404).json({
+                message: "User not found , or not authorized",
+                status : res.statusCode
+            })
+        }
+
+        if (user.role === "student"){
+            return res.status(403).json({
+                message : "Students are forbidden to do this operation",
                 status : res.statusCode
             })
         }
@@ -155,6 +172,23 @@ export const getJobById = async (req : AuthenticatedRequest, res : Response) => 
 export const getAdminJob = async (req : AuthenticatedRequest , res : Response) => {
     try{
         const adminId = req.user?._id
+
+        const user = await User.findById(adminId)
+
+        if (!user){
+            return res.status(404).json({
+                message: "User not found , or not authorized",
+                status : res.statusCode
+            })
+        }
+
+        if (user.role === "student"){
+            return res.status(403).json({
+                message : "Students are forbidden to do this operation",
+                status : res.statusCode
+            })
+        }
+
         const jobs = await Job.find({created_by : adminId}).populate({
             path : "company"
         }).sort({

@@ -26,4 +26,7 @@ const companySchema = new mongoose.Schema({
 },{
     timestamps : true
 })
+
+export type TCompany = mongoose.InferSchemaType<typeof companySchema>
+
 export const Company = mongoose.model("Company", companySchema);

@@ -1,6 +1,7 @@
 import {Request, Response} from "express"
 import {AuthenticatedRequest} from "../interfaces_and_types/authenticated_request";
 import {Company} from "../models/company.model";
+import {User} from "../models/user.model";
 
 export const registerCompany = async (req : AuthenticatedRequest, res : Response) => {
     try{
@@ -10,6 +11,22 @@ export const registerCompany = async (req : AuthenticatedRequest, res : Response
         if(!userId){
             return res.status(401).json({
                 message: "Unauthorized",
+                status : res.statusCode
+            })
+        }
+
+        const user = await User.findById(userId)
+
+        if (!user){
+            return res.status(404).json({
+                message: "User not found , or not authorized",
+                status : res.statusCode
+            })
+        }
+
+        if (user.role === "student"){
+            return res.status(403).json({
+                message : "Students are not allowed to create companies",
                 status : res.statusCode
             })
         }
@@ -55,6 +72,23 @@ export const getCompanyByUser = async (req : AuthenticatedRequest, res : Respons
     try{
         const userId = req.user?.id
         const companies = await Company.find({userId})
+
+        const user = await User.findById(userId)
+
+        if (!user){
+            return res.status(404).json({
+                message: "User not found , or not authorized",
+                status : res.statusCode
+            })
+        }
+
+        if (user.role === "student"){
+            return res.status(403).json({
+                message : "Students are not allowed to do this operation",
+                status : res.statusCode
+            })
+        }
+
         if(!companies) {
             return res.status(404).json({
                 message: "No companies found",
@@ -81,6 +115,25 @@ export const getCompanyById = async (req : AuthenticatedRequest , res : Response
     try{
         const {companyId} = req.params
         const company = await Company.findById(companyId)
+
+        const userId = req.user?._id
+
+        const user = await User.findById(userId)
+
+        if (!user){
+            return res.status(404).json({
+                message: "User not found , or not authorized",
+                status : res.statusCode
+            })
+        }
+
+        if (user.role === "student"){
+            return res.status(403).json({
+                message : "Students are not allowed to do this operation",
+                status : res.statusCode
+            })
+        }
+
         if(!company){
             return res.status(404).json({
                 message: "Company not found",
@@ -111,6 +164,22 @@ export const updateCompany = async (req : AuthenticatedRequest , res : Response)
         if(!userId){
             return res.status(401).json({
                 message: "Unauthorized",
+                status : res.statusCode
+            })
+        }
+
+        const user = await User.findById(userId)
+
+        if (!user){
+            return res.status(404).json({
+                message: "User not found , or not authorized",
+                status : res.statusCode
+            })
+        }
+
+        if (user.role === "student"){
+            return res.status(403).json({
+                message : "Students are forbidden to do this operation",
                 status : res.statusCode
             })
         }

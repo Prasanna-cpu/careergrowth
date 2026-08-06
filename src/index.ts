@@ -9,6 +9,7 @@ import {authRouter} from "./router/auth.router";
 import {userRouter} from "./router/user.router";
 import {companyRouter} from "./router/company.router";
 import {jobRouter} from "./router/job.router";
+import {applicationRouter} from "./router/application.router";
 
 
 dotenv.config();
@@ -53,6 +54,7 @@ app.use("/auth", authRouter)
 app.use("/api/user", userRouter)
 app.use("/api/company", companyRouter)
 app.use("/api/job", jobRouter)
+app.use("/api/application", applicationRouter)
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`)
