@@ -5,6 +5,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import {connectDB} from "./database/connection";
+import {authRouter} from "./router/auth.router";
+import {userRouter} from "./router/user.router";
 
 
 dotenv.config();
@@ -44,6 +46,9 @@ app.use(cookieParser())
 app.get("/", (_, res) => {
     res.send("Hello World!")
 })
+
+app.use("/auth", authRouter)
+app.use("/api/user", userRouter)
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`)
