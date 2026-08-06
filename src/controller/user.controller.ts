@@ -2,11 +2,13 @@
 import {Request, Response} from "express";
 import {AuthenticatedRequest} from "../interfaces_and_types/authenticated_request";
 import {User} from "../models/user.model";
+import {uploadToS3} from "../aws/uploadToS3";
 
 export const updateProfile = async (req : AuthenticatedRequest, res: Response) => {
     try{
         const {fullName, email, phoneNumber, bio, skills} = req.body
-        if (!fullName && !email && !phoneNumber && !bio && !skills) {
+        const file = req.file
+        if (!fullName && !email && !phoneNumber && !bio && !skills && !file) {
             return res.status(400).json({
                 message: "At least one field is required",
                 status: 400
@@ -39,6 +41,15 @@ export const updateProfile = async (req : AuthenticatedRequest, res: Response) =
                 status: res.statusCode
             })
         }
+
+
+        if(file) {
+            const {key, url} = await uploadToS3(file, "profile_pictures")
+            if(user.profile != null) {
+                user.profile.profilePhoto = url
+            }
+        }
+
 
         if (fullName != null) user.fullName = fullName
         if (email != null) user.email = email
