@@ -52,4 +52,7 @@ const jobSchema = new mongoose.Schema({
 },{
     timestamps : true
 });
+
+export type TJob = mongoose.InferSchemaType<typeof jobSchema>
+
 export const Job = mongoose.model("Job", jobSchema);
