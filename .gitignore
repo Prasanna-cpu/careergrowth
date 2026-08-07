@@ -2,3 +2,6 @@
 .idea
 node_modules
 dist
+
+*.desktop
+desktop.ini

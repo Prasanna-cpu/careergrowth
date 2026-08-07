@@ -10,6 +10,7 @@ import {userRouter} from "./router/user.router";
 import {companyRouter} from "./router/company.router";
 import {jobRouter} from "./router/job.router";
 import {applicationRouter} from "./router/application.router";
+import {botUserAgentBlocker, suspiciousRequestBlocker,standardRateLimiter} from "./security-middleware/securityMiddleware";
 
 
 dotenv.config();
@@ -31,6 +32,9 @@ app.use(cors({
     origin : process.env.CLIENT_URL,
     credentials : true
 }))
+app.use(botUserAgentBlocker)
+app.use(suspiciousRequestBlocker)
+app.use(standardRateLimiter)
 app.use(
     helmet({
         contentSecurityPolicy: {
