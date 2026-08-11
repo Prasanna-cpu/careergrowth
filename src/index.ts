@@ -19,10 +19,10 @@ setServers(["1.1.1.1","8.8.8.8"])
 
 
 const app = express()
-const port = process.env.PORT
-const uri = process.env.MONGODB_URI
+const port = process.env.PORT || 3000
+const uri = process.env.MONGODB_URI || "http://localhost:2000"
 
-if(port === undefined || port === null) throw new Error("port is not defined")
+// if(port === undefined || port === null) throw new Error("port is not defined")
 if(uri === undefined || uri === null) throw new Error("uri is not defined")
 
 
@@ -40,7 +40,7 @@ app.use(
         contentSecurityPolicy: {
             directives: {
                 defaultSrc: ["'self'"],
-                scriptSrc: ["'self'", "trusted-cdn.com"],
+                scriptSrc: ["'self'"],
                 styleSrc: ["'self'", "fonts.googleapis.com"],
                 imgSrc: ["'self'", "data:"],
             },
@@ -65,7 +65,7 @@ const startServer = async () => {
     console.log("Database connected")
 
     app.listen(port, () => {
-        console.log(`Server is running on http://localhost:${port}`)
+        console.log(`Server is running on port ${port}`);
     })
 }
 
