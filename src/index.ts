@@ -60,11 +60,18 @@ app.use("/api/company", companyRouter)
 app.use("/api/job", jobRouter)
 app.use("/api/application", applicationRouter)
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`)
-    connectDB(uri as string)
-        .then(() => console.log("Database connected"))
-        .catch((error) => console.error(error))
+const startServer = async () => {
+    await connectDB(uri as string)
+    console.log("Database connected")
+
+    app.listen(port, () => {
+        console.log(`Server is running on http://localhost:${port}`)
+    })
+}
+
+startServer().catch((error) => {
+    console.error("Failed to start server:", error)
+    process.exit(1)
 })
 
 
