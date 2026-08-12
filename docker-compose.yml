@@ -3,15 +3,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+
     container_name: careergrowth
+
     restart: unless-stopped
+
     env_file:
       - .env
-    environment:
-      NODE_ENV: production
-      PORT: 4000
+
     ports:
-      - "4000:4000"
-
-
-# I am using MongoDB Atlas , so no need to add mongo service
+      - "3000:3000"

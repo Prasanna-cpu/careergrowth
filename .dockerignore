@@ -1,9 +1,10 @@
 node_modules
 dist
-.env
 .git
 .github
 .idea
+.env*
+.elasticbeanstalk
+.gitignore
 npm-debug.log
-Dockerfile
 docker-compose.yml
